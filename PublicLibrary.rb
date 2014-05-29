@@ -39,15 +39,21 @@ class Shelf
 end
 
 class Library
-  attr_accessor :name, :shelfsHash
+  attr_accessor :name, :shelfsHash, :numberOfShelfs
 
   def initialize(name)
     @name = name
     @shelfsHash = {}
+    @numberOfShelfs = 0
+  end
+
+  def addShelf(shelf)
+    @shelfsHash[shelf.name] = shelf
+    @numberOfShelfs += 1
   end
 
   def allBooks
-
+    puts "All Books in the library:"
     @shelfsHash.each do |key,value|
       puts "Shelf name: #{value.name}"
       value.allBooks
@@ -58,8 +64,9 @@ end
 
 Lib1 = Library.new("Great Alexander Library")
 shelf1 = Shelf.new("A1")
-Lib1.shelfsHash[shelf1.name] = shelf1
+Lib1.addShelf(shelf1)
 
+puts "Number of shelves: #{Lib1.numberOfShelfs}"
 
 b1 = Book.new("blue wings","1234","Ahmet")
 b1.enshelf(shelf1)
