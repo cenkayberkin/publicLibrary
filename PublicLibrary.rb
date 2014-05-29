@@ -13,7 +13,13 @@ class Book
   end
 
   def enshelf(shelf)
+    @shelf = shelf
     shelf.booksHash[@name] = self
+  end
+
+  def unshelf()
+    @shelf.booksHash.delete(@name)
+    @shelf = nil
   end
 end
 
@@ -66,5 +72,7 @@ b3.enshelf(shelf1)
 
 b4 = Book.new("black wings","3121","Kazim")
 b4.enshelf(shelf1)
+
+b1.unshelf
 
 Lib1.allBooks
