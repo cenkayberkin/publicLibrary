@@ -1,5 +1,4 @@
 class Book
-  attr_accessor :name, :isbn, :author, :shelf
 
   def initialize(name,isbn,author)
     @name = name
@@ -9,10 +8,12 @@ class Book
   end
 
   def to_s
-    "Name: #{@name} , isbn: #{@isbn} , author: #{@author}"
+    "Book => Name: #{@name} , isbn: #{@isbn} , author: #{@author}"
   end
 
   def enshelf(shelf)
+    raise ArgumentError.new("Book enshelf argument error") if shelf.nil? or shelf.class != Shelf
+
     @shelf = shelf
     shelf.booksHash[@name] = self
   end
@@ -24,9 +25,10 @@ class Book
 end
 
 class Shelf
-  attr_accessor :booksHash ,:name
+  attr_reader :name, :booksHash
 
   def initialize(name)
+    # exception firlat eger uygun degilse gelen parametreler.
     @name = name
     @booksHash = {}
   end
@@ -39,21 +41,24 @@ class Shelf
 end
 
 class Library
-  attr_accessor :name, :shelfsHash, :numberOfShelfs
+  attr_reader :name, :numberOfShelfs
 
   def initialize(name)
+    # exception firlat eger uygun degilse gelen parametreler.
     @name = name
     @shelfsHash = {}
     @numberOfShelfs = 0
   end
 
   def addShelf(shelf)
+    raise ArgumentError.new("Library addShelf argument error") if shelf.nil? or shelf.class != Shelf
+
     @shelfsHash[shelf.name] = shelf
     @numberOfShelfs += 1
   end
 
   def allBooks
-    puts "All Books in the library:"
+    puts "All Books in the library: #{@name}"
     @shelfsHash.each do |key,value|
       puts "Shelf name: #{value.name}"
       value.allBooks
@@ -81,5 +86,4 @@ b4 = Book.new("black wings","3121","Kazim")
 b4.enshelf(shelf1)
 
 b1.unshelf
-
 Lib1.allBooks
