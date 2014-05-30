@@ -14,8 +14,13 @@ class Book
   def enshelf(shelf)
     raise ArgumentError.new("Book enshelf argument error") if shelf.nil? or shelf.class != Shelf
 
-    @shelf = shelf
-    shelf.booksHash[@name] = self
+    # Checkin if book enshelfed already into other shelf.
+    if !shelf.library.checkBookInLibrary?(@name)
+      @shelf = shelf
+      shelf.booksHash[@name] = self
+    else
+      puts "Book #{@name} is already enshelfed into other shelf \nBook cant belong to two selfs at once."
+    end
   end
 
   def unshelf()
@@ -29,11 +34,13 @@ class Book
 end
 
 class Shelf
+  attr_accessor :library
   attr_reader :name, :booksHash
 
   def initialize(name)
     @name = name
     @booksHash = {}
+    @library = nil
   end
 
   def allBooks
@@ -56,6 +63,7 @@ class Library
     raise ArgumentError.new("Library addShelf argument error") if shelf.nil? or shelf.class != Shelf
 
     @shelfsHash[shelf.name] = shelf
+    shelf.library = self
     @numberOfShelfs += 1
   end
 
@@ -67,12 +75,23 @@ class Library
       puts ""
     end
   end
+
+  def checkBookInLibrary?(bookName)
+    result = false
+    @shelfsHash.each do |key,bookShelf|
+      if bookShelf.booksHash.has_key?(bookName)
+        result = true
+        break
+      end
+    end
+    return result
+  end
+
 end
 
 Lib1 = Library.new("Great Alexander Library")
 shelf1 = Shelf.new("A1")
 Lib1.addShelf(shelf1)
-puts "Number of shelves: #{Lib1.numberOfShelfs}"
 b1 = Book.new("blue wings","1234","John")
 b1.enshelf(shelf1)
 b2 = Book.new("red wings","4334","Martin")
@@ -91,5 +110,6 @@ b6 = Book.new("Red Woman","4573","Tim")
 b6.enshelf(shelf2)
 b7 = Book.new("Game of thrones","8765","Bran")
 b7.enshelf(shelf2)
-
+b7.enshelf(shelf2)
 Lib1.allBooks
+puts "Number of shelves: #{Lib1.numberOfShelfs}"
